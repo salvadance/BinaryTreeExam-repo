@@ -29,7 +29,8 @@ BinaryTreeExam/
 │       ├── TreeDisplayer.java     # Visualization and display logic
 │       ├── BinaryTreeMenu.java    # User interface and main entry point
 │       └── package-info.java      # Package documentation
-└── bin/                           # Compiled class files
+├── LICENSE                          # MIT License
+└── README.md                        # README FILE
 ```
 
 ## Key Components
