@@ -1,6 +1,7 @@
 # Compiled class files
 bin/
 *.class
+*classpath
 
 # Eclipse metadata
 .metadata/

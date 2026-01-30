@@ -58,6 +58,8 @@ public class BinaryTree {
 		root = null;
 	}
 	
+	private enum Direction {RIGHT, LEFT}
+	
 	/**
 	 * Clears the AVL tree
 	 */
@@ -365,8 +367,8 @@ public class BinaryTree {
 			root.parent = null;
 		}
 
-		treeSetChild(node.left, "right", node);
-		treeSetChild(node, "left", leftRightChild);
+		treeSetChild(node.left, Direction.RIGHT, node);
+		treeSetChild(node, Direction.LEFT, leftRightChild);
 	}
 
 	/**
@@ -388,23 +390,23 @@ public class BinaryTree {
 			root.parent = null;
 		}
 
-		treeSetChild(node.right, "left", node);
-		treeSetChild(node, "right", rightLeftChild);
+		treeSetChild(node.right, Direction.LEFT, node);
+		treeSetChild(node, Direction.RIGHT, rightLeftChild);
 	}
 
 	/**
 	 * Method that sets node as either left or right child of a parent node
 	 * Updates the child's parent pointer and recalculates the parent's height
 	 * @param parent the parent node
-	 * @param whichChild "left" or "right" to specify which child to set
+	 * @param whichChild DIrection enum "left" or "right" to specify which child to set
 	 * @param child the node to set as the child
 	 * @return true that child was set or false if whichChild is invalid
 	 */
-	private boolean treeSetChild(Node parent, String whichChild, Node child) {
-		if (!whichChild.equals("left") && !whichChild.equals("right")) return false; // Return false if string argument does not match
+	private boolean treeSetChild(Node parent, Direction whichChild, Node child) {
+		if (!(whichChild == Direction.LEFT) && !(whichChild == whichChild.RIGHT)) return false; // Return false if string argument does not match
 
 
-		if (whichChild.equals("left"))
+		if (whichChild == Direction.LEFT)
 			parent.left = child;
 		else
 			parent.right = child;
@@ -430,9 +432,9 @@ public class BinaryTree {
 	private boolean treeReplaceChild(Node parent, Node currentChild, Node childToAdd) {
 
 		if (parent.left == currentChild)
-			return treeSetChild(parent, "left", childToAdd);
+			return treeSetChild(parent, Direction.LEFT, childToAdd);
 		else if (parent.right == currentChild)
-			return treeSetChild(parent, "right", childToAdd);
+			return treeSetChild(parent, Direction.RIGHT, childToAdd);
 		return false;
 	}
 
