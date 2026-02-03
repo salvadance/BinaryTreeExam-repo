@@ -42,7 +42,7 @@ public class BinaryTreeMenu {
 	 * Automatically inserts values and rebalances the tree
 	 */
 	private void initializeTreeWithRandomNumbers() {
-		Random randG = new Random();
+		Random randG = new Random(500);
 		int numberOfNodes = (1 << 4) - 1;
 		int[] nums = new int[numberOfNodes];
 		//int treeHeight;
@@ -51,7 +51,7 @@ public class BinaryTreeMenu {
 			nums[i] = randG.nextInt(10000);
 		}
 
-		System.out.print("Orginal: [");
+		System.out.print("Orginal random input order: [");
 		for (int num : nums) {
 			System.out.print(num + ", ");
 		}
@@ -61,7 +61,7 @@ public class BinaryTreeMenu {
 			tree.insert(num);
 		}
 		
-		System.out.println("Is tree balanced: " + tree.isAVLBalanced());
+		System.out.println("Is tree balanced: " + tree.isAVLBalanced() + "\n");
 	}
 	
 	/**

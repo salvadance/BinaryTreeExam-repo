@@ -58,7 +58,7 @@ public class BinaryTree {
 		root = null;
 	}
 	
-	private enum Direction {RIGHT, LEFT}
+	private enum Direction {Right, Left}
 	
 	/**
 	 * Clears the AVL tree
@@ -82,28 +82,50 @@ public class BinaryTree {
 	 * @return true if balanced, false otherwise
 	 */
 	public boolean isAVLBalanced() {
-	    return checkBalance(root);
+	    return checkIsBalanced(root);
 	}
 
 	/**
-	 * Helper method that recursively checks if all nodes satisfy AVL balance property.
+	 * Helper method that recursively checks if subtree satisfy AVL balance property.
 	 * Prints diagnostic information for any nodes that violate the balance constraint.
 	 * 
 	 * @param node the current node to check (and its subtrees)
 	 * @return true if this node and all descendants are balanced, false otherwise
 	 */
-	private boolean checkBalance(Node node) {
+	private boolean checkIsBalanced(Node node) {
 	    if (node == null) return true;
 	    
 	    int balance = getTreeBalance(node);
 	    
 	    if (Math.abs(balance) > 1) {
-	        System.out.println("Imbalance at node " + node.key + 
-	                          " with balance factor: " + balance);
+	    	String nodeStr;
+	    	String nodeHeightStr;
+	    	
+	        System.out.print("Imbalance at node " + node.key + 
+	                          " with balance factor: " + balance + " || ");
+	        if (node.left == null) {
+	        	nodeStr = "null";
+	        	nodeHeightStr = "-1";
+	        }
+	        else {
+	        	nodeStr = "" + node.left.key;
+	        	nodeHeightStr = "" + node.left.height;
+	        }
+	        System.out.print("left child : " + nodeStr + " left child height: " + nodeHeightStr + " || ");
+	        
+	        if (node.right == null) {
+	        	nodeStr = "null";
+	        	nodeHeightStr = "-1";
+	        }
+	        else {
+	        	nodeStr = "" + node.right.key;
+	        	nodeHeightStr = "" + node.right.height;
+	        }
+	        System.out.println("right child : " + nodeStr + " right child height: " + nodeHeightStr);
 	        return false;
 	    }
-	    
-	    return checkBalance(node.left) && checkBalance(node.right);
+	    return true;
+	    //return checkIsBalanced(node.left) && checkIsBalanced(node.right);
 	}
 	
 	/**
@@ -297,6 +319,8 @@ public class BinaryTree {
 	 * Rebalances an AVL tree node to maintain the balance property
 	 * 
 	 * First updates the node's height, then checks its balance factor.
+	 * Prints the rotation and if subtree is balanced after rotation.
+	 * Calls the 
 	 * Performs rotations based on the balance factor:
 	 * 		- Balance factor -2 (right-heavy): Perform left rotation
 	 * 		  with optional right rotation on right child first (double roation)
@@ -309,24 +333,37 @@ public class BinaryTree {
 		//First calls treeUpdateHeight
 		treeUpdateHeight(node);
 		
+		
+		
 		int treeBalance = getTreeBalance(node);
 		
-		
-		if (treeBalance == -2) { // Right subtree is too tall, needs left rotation
-			if (getTreeBalance(node.right) == 1) {
-				// Double rotation case.
-				treeRotateRight(node.right);
+		if (!checkIsBalanced(node)) {
+			String rotationStr = "("; //String for rotation directions
+			
+			System.out.print("Rotating tree ");
+			
+			if (treeBalance == -2) { // Right subtree is too tall, needs left rotation
+				if (getTreeBalance(node.right) == 1) {
+					// Double rotation case.
+					treeRotateRight(node.right);
+					rotationStr += Direction.Right.toString();
+				}
+				treeRotateLeft(node);
+				rotationStr += Direction.Left.toString();
 			}
-			treeRotateLeft(node);
-		}
-
-		else if (treeBalance == 2) { // Left subtree is too tall, needs right rotation
-			// Double rotation case. Left-Right
-			if (getTreeBalance(node.left) == -1) {
-				treeRotateLeft(node.left);
+	
+			else if (treeBalance == 2) { // Left subtree is too tall, needs right rotation
+				// Double rotation case. Left-Right
+				if (getTreeBalance(node.left) == -1) {
+					treeRotateLeft(node.left);
+					rotationStr += Direction.Left.toString();
+				}
+	
+				treeRotateRight(node);
+				rotationStr += Direction.Right.toString();
 			}
-
-			treeRotateRight(node);
+			
+			System.out.println(rotationStr + ") -> Subtree balanced now?: " + checkIsBalanced(node));
 		}
 
 	}
@@ -367,8 +404,8 @@ public class BinaryTree {
 			root.parent = null;
 		}
 
-		treeSetChild(node.left, Direction.RIGHT, node);
-		treeSetChild(node, Direction.LEFT, leftRightChild);
+		treeSetChild(node.left, Direction.Right, node);
+		treeSetChild(node, Direction.Left, leftRightChild);
 	}
 
 	/**
@@ -390,8 +427,8 @@ public class BinaryTree {
 			root.parent = null;
 		}
 
-		treeSetChild(node.right, Direction.LEFT, node);
-		treeSetChild(node, Direction.RIGHT, rightLeftChild);
+		treeSetChild(node.right, Direction.Left, node);
+		treeSetChild(node, Direction.Right, rightLeftChild);
 	}
 
 	/**
@@ -403,10 +440,10 @@ public class BinaryTree {
 	 * @return true that child was set or false if whichChild is invalid
 	 */
 	private boolean treeSetChild(Node parent, Direction whichChild, Node child) {
-		if (!(whichChild == Direction.LEFT) && !(whichChild == whichChild.RIGHT)) return false; // Return false if string argument does not match
+		if (whichChild == null) return false; // Return false if string argument does not match
 
 
-		if (whichChild == Direction.LEFT)
+		if (whichChild == Direction.Left)
 			parent.left = child;
 		else
 			parent.right = child;
@@ -432,9 +469,9 @@ public class BinaryTree {
 	private boolean treeReplaceChild(Node parent, Node currentChild, Node childToAdd) {
 
 		if (parent.left == currentChild)
-			return treeSetChild(parent, Direction.LEFT, childToAdd);
+			return treeSetChild(parent, Direction.Left, childToAdd);
 		else if (parent.right == currentChild)
-			return treeSetChild(parent, Direction.RIGHT, childToAdd);
+			return treeSetChild(parent, Direction.Right, childToAdd);
 		return false;
 	}
 
@@ -489,10 +526,10 @@ public class BinaryTree {
 	}
 	
 	/**
-	 * Recursively calculates the height of a subtree given a node as its root.
+	 * Returns height of a node parameter 
 	 * 
 	 * @param node the root of the subtree whose height is to be calculated
-	 * @return returns tree height, or -1 if the node is null
+	 * @return returns tree height from node's class field  of height, or -1 if the node is null
 	 */
 	public int getTreeHeight(Node node) {
 
@@ -500,7 +537,7 @@ public class BinaryTree {
 			return -1;
 		}
 
-		return 1 + Math.max(getTreeHeight(node.left), getTreeHeight(node.right));
+		return node.height;
 
 	}
 	
