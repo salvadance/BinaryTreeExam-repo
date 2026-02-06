@@ -3,7 +3,7 @@ package binaryTreeExam;
 
 
 /**
- * Implementation of a self-balancing AVL (Adelson-Velsky and Landis) binary search tree.
+ * Implementation of a self-balancing AVL (Adelson-Velsky and Landis) tree.
  * 
  * This tree maintains the AVL balance property where the height difference between
  * left and right subtrees of any node is at most 1. Automatic rebalancing occurs
@@ -21,7 +21,7 @@ package binaryTreeExam;
  */
 
 /**
-	 * Represents a node in the AVL binary search tree.
+	 * Represents a node in the AVL tree.
 	 * Each node contains a key value, references to left and right children,
 	 * a reference to its parent, and a height value for AVL balancing.
 	 */
@@ -48,13 +48,13 @@ package binaryTreeExam;
 		}
 	}
 
-public class BinaryTree {
+public class AVLTree {
 
 
 	private Node root; // The root node
 	
 	//Constructor
-	public BinaryTree() {
+	public AVLTree() {
 		root = null;
 	}
 	
@@ -129,7 +129,7 @@ public class BinaryTree {
 	}
 	
 	/**
-	 * Entry method to insert into binary tree
+	 * Entry method to insert into AVL tree
 	 * First checks if the key is already present using BSTContains
 	 * If the key is unique, creates a new node and calls insertNode to insert
 	 * it into the tree with proper AVL rebalancing 
@@ -220,7 +220,7 @@ public class BinaryTree {
 	/** 
 	 * Method that takes a node as a parameter and removes based on 4 cases
 	 * Base case: Node node is null returns false.
-	 * Case 1: Node is an non-root internal node with 2 children, find successor node based on binary tree implementation if larger numbers are on left or right
+	 * Case 1: Node is an non-root internal node with 2 children, find successor node based on AVL tree implementation if larger numbers are on left or right
 	 * 			or smaller numbers left or right.
 	 * Case 2: The node to be removed is the root
 	 * Case 3: Node is internal node with left child only
@@ -502,7 +502,7 @@ public class BinaryTree {
 	}
 
 	/**
-	 * Iterative searches the binary search tree to determine if key exists
+	 * Iterative searches the AVL search tree to determine if key exists
 	 * Traverses the tree by comparing the search key with each node's key,
 	 * moving left for smaller values and right for larger values
 	 * 
