@@ -148,7 +148,7 @@ public class AVLTreeMenu {
 	/**
 	 * Prompts the user to remove a node from the tree by key value
 	 * Validates input range (1-9999) and confirms nodes existence before removal.
-	 * Updtaes the node count and displays remaining values.
+	 * Updates the node count and displays remaining values.
 	 * Handles InputMismatchException gracefully and exits if tree becomes empty
 	 * 
 	 * @param scnr the Scanner object for reading user input
@@ -156,6 +156,12 @@ public class AVLTreeMenu {
 	private void removeNumber(Scanner scnr) {
 		int numberToRemove;
 		char quitChar = 'a';
+		
+		if (tree == null || tree.isEmpty()) {
+			System.out.println("Tree is empty: Now exiting");
+			return;
+		}
+		
 		
 		do {
 			
@@ -249,6 +255,7 @@ public class AVLTreeMenu {
      * - 'l': Print flipped tree view
      * - 'i': Initialize tree with random values
      * - 'p': Print normal tree view
+     * - 'o': Print tree orders
      * - 's': Print tree statistics (in-order, reversed, original order)
      * - 'd': Delete/remove a node
      * - 'c': Clear entire tree
@@ -264,6 +271,7 @@ public class AVLTreeMenu {
 			case 'l' -> displayer.printFlipped(isTreeReversed);
 			case 'i' -> initializeTreeWithRandomNumbers();
 			case 'p' -> displayer.printTreeNormalOrientation(isTreeReversed);
+			case 'o' -> displayer.printTreeOrders();
 			case 's' -> displayer.printTreeOrders();
 			case 'd' -> removeNumber(scnr);
 			case 'c' -> clearTree();

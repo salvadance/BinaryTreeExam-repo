@@ -20,12 +20,16 @@ package binaryTreeExam;
  * @see TreeDisplayer
  */
 
-/**
+	
+
+public class AVLTree {
+
+	/**
 	 * Represents a node in the AVL tree.
 	 * Each node contains a key value, references to left and right children,
 	 * a reference to its parent, and a height value for AVL balancing.
 	 */
-	class Node {
+	private class Node {
 		/** The key/value stored in this node (range: 1-9999) */
 		public Integer key;
 		
@@ -47,106 +51,25 @@ package binaryTreeExam;
 			height = 0;
 		}
 	}
-
-public class AVLTree {
-
-
-	private Node root; // The root node
 	
-	//Constructor
+	
+	private Node root; // The root node
+	private int numberOfValues; // Size of tree aka how many nodes with values does it have
+	
+
 	public AVLTree() {
 		root = null;
+		numberOfValues = 0;
 	}
 	
+	// Enum for direction of rotation
 	private enum Direction {Right, Left}
-	
-	/**
-	 * Clears the AVL tree
-	 */
-	public void clear() {
-		root = null;
-	}
-	
-	/**
-	 * Indicates if tree is empty
-	 * An tree is empty when its root node is null
-	 * 
-	 * @return true if root is null, (tree is empty), false otherwise
-	 */
-	public boolean isEmpty() {
-		return root == null;
-	}
-	
-	/**
-	 * Checks if the tree satisfies AVL balance property
-	 * @return true if balanced, false otherwise
-	 */
-	public boolean isAVLBalanced() {
-	    return checkIsBalanced(root);
-	}
 
-	/**
-	 * Helper method that recursively checks if subtree satisfy AVL balance property.
-	 * Prints diagnostic information for any nodes that violate the balance constraint.
-	 * 
-	 * @param node the current node to check (and its subtrees)
-	 * @return true if this node and all descendants are balanced, false otherwise
-	 */
-	private boolean checkIsBalanced(Node node) {
-	    if (node == null) return true;
-	    
-	    int balance = getTreeBalance(node);
-	    
-	    if (Math.abs(balance) > 1) {
-	    	String nodeStr;
-	    	String nodeHeightStr;
-	    	
-	        System.out.print("Imbalance at node " + node.key + 
-	                          " with balance factor: " + balance + " || ");
-	        if (node.left == null) {
-	        	nodeStr = "null";
-	        	nodeHeightStr = "-1";
-	        }
-	        else {
-	        	nodeStr = "" + node.left.key;
-	        	nodeHeightStr = "" + node.left.height;
-	        }
-	        System.out.print("left child : " + nodeStr + " left child height: " + nodeHeightStr + " || ");
-	        
-	        if (node.right == null) {
-	        	nodeStr = "null";
-	        	nodeHeightStr = "-1";
-	        }
-	        else {
-	        	nodeStr = "" + node.right.key;
-	        	nodeHeightStr = "" + node.right.height;
-	        }
-	        System.out.println("right child : " + nodeStr + " right child height: " + nodeHeightStr);
-	        return false;
-	    }
-	    return true;
-	    //return checkIsBalanced(node.left) && checkIsBalanced(node.right);
-	}
-	
-	/**
-	 * Entry method to insert into AVL tree
-	 * First checks if the key is already present using BSTContains
-	 * If the key is unique, creates a new node and calls insertNode to insert
-	 * it into the tree with proper AVL rebalancing 
-	 * 
-	 * @param key is the number to be inserted
-	 * @return returns if key was successfully inserted
-	 */
-	public boolean insert(int key) {
-		if (BSTContains(key)) { //If BSTContains() returns true then return false, no insert occurs 
-			return false;
-		}
-
-		Node nodeToAdd = new Node(key);
-		insertNode(nodeToAdd); // call insertNode() method
-		return true;
-	}
-
+/* **************************************************************************************************************
+ * AVL Tree operations insert and remove 
+ * 
+ * *************************************************************************************************************
+*/
 	/**
 	 * Inserts a node into the AVL tree and rebalances as needed
 	 * 
@@ -190,32 +113,14 @@ public class AVLTree {
 			}
 		}
 
-		node = node.parent;
+		node = node.parent; // Point the current node to it's parent node
 
 		while (node != null) { // while loop to rebalance tree going down from node to parent to root
 			treeRebalance(node);
 			node = node.parent;
 		}
 	}
-	
-	
-	/**
-	 * Entry method to remove a node with the specified key from the AVL tree
-	 * First searches if the tree has a node with key value using BSTSearch. if found, calls
-	 * removeNode to remove it and rebalance the tree.
-	 * 
-	 * @param key the value of the node to remove from the tree
-	 * @return true if the node was successfully removed, false if the key was not 
-	 * 			found in the tree
-	 */
-	public boolean remove(int key) {
-		//Assign node with BSTSearch() return
-		Node node = BSTSearch(root, key);
-		
-		return removeNode(node); //Return result of removeNode();
-		
-		
-	}
+
 	
 	/** 
 	 * Method that takes a node as a parameter and removes based on 4 cases
@@ -296,24 +201,6 @@ public class AVLTree {
 		return true;
 	}
 
-	/** Method to get a node with a specific key value
-	 * @param node represents the current node
-	 * @param key is the value to be found.
-	 * @return node after BSTSearch method or null if current node is null
-	 */
-	public Node BSTSearch(Node node, int key) {
-
-		if (node == null) // Base Case: current node is null, returns null 
-			return null;
-
-		if (node.key == key) // Base case node's key == key being searched, returns that node
-			return node;
-		else if (key < node.key) // If key < node's key then recursively call BSTSearch with node's left child as argument
-			return BSTSearch(node.left, key);
-		else
-			return BSTSearch(node.right, key); // Else recursively call with node's right child as argument
-
-	}
 	
 	/**
 	 * Rebalances an AVL tree node to maintain the balance property
@@ -332,8 +219,6 @@ public class AVLTree {
 	private void treeRebalance(Node node) {
 		//First calls treeUpdateHeight
 		treeUpdateHeight(node);
-		
-		
 		
 		int treeBalance = getTreeBalance(node);
 		
@@ -370,7 +255,7 @@ public class AVLTree {
 
 	/**
 	 * Method that updates the subtree given a node as the root of the subtree
-	 * 
+	 * TODO: [Research: If made an accidental change]
 	 * @param node is the root of the subtree which height will be updated (root of subtree)
 	 */
 	private void treeUpdateHeight(Node node) {
@@ -525,19 +410,264 @@ public class AVLTree {
 		return false;
 	}
 	
+	/** Method to get a node with a specific key value
+	 * @param node represents the current node
+	 * @param key is the value to be found.
+	 * @return node after BSTSearch method or null if current node is null
+	 */
+	private Node BSTSearch(Node node, int key) {
+		
+		if (node == null) return null;
+
+		if (node.key == key) return node;
+		else if (key < node.key) return BSTSearch(node.left, key);
+		else return BSTSearch(node.right, key);
+	}
+	
+	/**
+	 * Helper method that recursively checks if subtree satisfy AVL balance property.
+	 * Prints diagnostic information for any nodes that violate the balance constraint.
+	 * 
+	 * @param node the current node to check (and its subtrees)
+	 * @return true if this node and all descendants are balanced, false otherwise
+	 */
+	private boolean checkIsBalanced(Node node) {
+	    if (node == null) return true;
+	    
+	    int balance = getTreeBalance(node);
+	    
+	    if (Math.abs(balance) > 1) {
+	    	String nodeStr;
+	    	String nodeHeightStr;
+	    	
+	        System.out.print("Imbalance at node " + node.key + 
+	                          " with balance factor: " + balance + " || ");
+	        if (node.left == null) {
+	        	nodeStr = "null";
+	        	nodeHeightStr = "-1";
+	        }
+	        else {
+	        	nodeStr = "" + node.left.key;
+	        	nodeHeightStr = "" + node.left.height;
+	        }
+	        System.out.print("left child : " + nodeStr + " left child height: " + nodeHeightStr + " || ");
+	        
+	        if (node.right == null) {
+	        	nodeStr = "null";
+	        	nodeHeightStr = "-1";
+	        }
+	        else {
+	        	nodeStr = "" + node.right.key;
+	        	nodeHeightStr = "" + node.right.height;
+	        }
+	        System.out.println("right child : " + nodeStr + " right child height: " + nodeHeightStr);
+	        return false;
+	    }
+	    return true;
+	}
+	
+/* ================================================================================================================================
+ * 											*Implementation of visiting functions*
+ * 
+ * Since encapsulation is kept by making the Node class private these methods help to perform operations on nodes of the binary tree
+ * Uses functional interface and method parameter   
+ * 
+ * There are 4 type of traversal here in order, reverse order, preorder and post order
+ * ================================================================================================================================
+ */
+	
+	//TODO: Add documentation
+	private void BSTSearch(Node node, int key, InfoExtractor extractor) {
+		
+		if (node == null) {
+			Integer value = null;
+			Integer parent = null;
+			Integer left = null;
+			Integer right = null;
+			int height = -1;
+			extractor.extract(value, parent, left, left, height);
+			return;
+		}
+
+		if (node.key == key) {
+			Integer parent = node.parent != null ? node.parent.key : null;
+			Integer left = node.left != null ? node.left.key : null;
+			Integer right = node.right != null ? node.right.key : null;;
+			extractor.extract(node.key, parent, left, right, node.height);
+		}
+		else if (key < node.key) BSTSearch(node.left, key, extractor);
+		else BSTSearch(node.right, key, extractor);
+		
+	}
+	
+	/**
+	 * The method to traverse in order or ascending order
+	 * 1. Recusively goes to left-most node of the subtree if left child if left child not null.
+	 * 2. Then goes up one node, visits it or performs an action
+	 * 3. Then goes to the right child if not null, 
+	 * 4. Then the process repeats until the right most node of the tree is reached.
+	 * @param node the current node traversing
+	 * @param visitor the NodeVisitor that will be called with each node's value
+	 */
+	private void inOrder(Node node, SimpleVisitor visitor) {
+		
+		if (node == null) return; // return if node is null
+		
+		inOrder(node.left, visitor); // Go to left child
+		visitor.visit(node.key); // perform action
+		inOrder(node.right, visitor); // Go to right child
+		
+	}
+	
+	/**
+	 * * The method to traverse in order or descending order
+	 * 1. Recusively goes to right-most node of the subtree if left child if right child not null.
+	 * 2. Then goes up one node, visits it or performs an action
+	 * 3. Then goes to the left child if not null
+	 * 4. Then the process repeats until the right most node of the tree is reached.
+	 * @param node the current node in traversal
+	 * @param visitor the NodeVisitor that will be called with each node's value
+	 */
+	private void reverseOrder(Node node, SimpleVisitor visitor) {
+		
+		if (node == null) return; // return if node is null
+
+		reverseOrder(node.right, visitor); // Go to right child
+		visitor.visit(node.key); // perform action
+		reverseOrder(node.left, visitor); // Go to right child
+
+
+
+	}
+
+	/**
+	 * The method to traverse in post order traversal. Visits the left-most node, then its sibling to parent then goes right.
+	 * 
+	 * 1. First recusively goes to left child until it finds the deepest and left-most leaf node and performs an action, 
+	 * 		- Can be a left or right child of a parent node. (The following would)
+	 * 2. Then checks if the node has a sibling
+	 * 3. If no right sibling then performs action at its parent node.
+	 * 4. Then the process repeats until the right most node of the tree is reached.
+	 * @param node the current node in traversal
+	 * @param visitor the NodeVisitor that will be called with each node's value
+	 */
+	private void postOrder(Node node, SimpleVisitor visitor) {
+		if (node == null) return; // return if node is null
+
+		postOrder(node.left, visitor); // Go to left child
+		postOrder(node.right, visitor); // Go to right child
+		visitor.visit(node.key); // perform action
+	}
+
+
+	/**
+	 * The method to traverse in pre order traversal. Visit, meaning it performs an action at, at the root node first of a non-empty tree
+	 * 
+	 * 1. First visits the root node and performs an action on node value.
+	 * 2. Then traverses to 
+	 * 			- the left child if non-null and performs an action
+	 * 			- If no left child then moves right and performs an action
+	 * 			- it node has no children, moves up to its parent node (no action is preformed since parent was visited before) 
+	 * 3. The process repeats until the last node is reached which would be the right most and bottom most node of the tree. 
+	 * @param node the current node in traversal
+	 * @param visitor the NodeVisitor that will be called with each node's value
+	 */
+	private void preOrder(Node node, SimpleVisitor visitor) {
+		if (node == null) return; // return if node is null
+
+		visitor.visit(node.key); // perform action 
+		preOrder(node.left, visitor); // Go to left child
+		preOrder(node.right, visitor); // Go to right child
+	}
+	
+	//TODO: [Create documentation]
+	private void preOrder(Node node, int height, int maxHeight, DetailedVisitor visitor) {
+		
+		if (node == null) { //Base Case
+			if (height <= maxHeight) {
+				Integer refToAdd = null;
+				visitor.visit(refToAdd, height);
+				preOrder(null, height + 1, maxHeight, visitor);
+			}
+			return;
+		}
+		
+		preOrder(node.left, height + 1, maxHeight, visitor);
+		preOrder(node.right, height + 1, maxHeight, visitor);
+		visitor.visit(node.key, height);
+		
+	}
+	
+/* **********************************************************************************************************
+ *                        Public Methods
+ * Methods used to insert, remove, search and get info on the AVL tree
+ * 
+ * **********************************************************************************************************
+ */
+	
+	
+	/**
+	 * Entry method to insert into AVL tree
+	 * First checks if the key is already present using BSTContains
+	 * If the key is unique, creates a new node and calls insertNode to insert
+	 * it into the tree with proper AVL rebalancing 
+	 * 
+	 * @param key is the number to be inserted
+	 * @return returns if key was successfully inserted
+	 */
+	public boolean insert(int key) {
+		if (BSTContains(key)) { //If BSTContains() returns true then return false, no insert occurs 
+			return false;
+		}
+
+		Node nodeToAdd = new Node(key);
+		insertNode(nodeToAdd); // call insertNode() method
+		numberOfValues++;
+		return true;
+	}
+	
+	/**
+	 * Entry method to remove a node with the specified key from the AVL tree
+	 * First searches if the tree has a node with key value using BSTSearch. if found, calls
+	 * removeNode to remove it and rebalance the tree.
+	 * 
+	 * @param key the value of the node to remove from the tree
+	 * @return true if the node was successfully removed, false if the key was not 
+	 * 			found in the tree
+	 */
+	public boolean remove(int key) {
+		//Assign node with BSTSearch() return
+		Node node = BSTSearch(root, key);
+		
+		if (removeNode(node)) {
+			numberOfValues--;
+			return true;
+		} //Return result of removeNode();
+		
+		return false;
+	}
+	
+	//TODO: Add documentation
+	public void search(int key, InfoExtractor extractor) {
+
+		BSTSearch(root, key, extractor);
+
+	}
+
+	
 	/**
 	 * Returns height of a node parameter 
 	 * 
 	 * @param node the root of the subtree whose height is to be calculated
 	 * @return returns tree height from node's class field  of height, or -1 if the node is null
 	 */
-	public int getTreeHeight(Node node) {
+	public int getTreeHeight() {
 
-		if (node == null) {
+		if (root == null) {
 			return -1;
 		}
 
-		return node.height;
+		return root.height;
 
 	}
 	
@@ -549,5 +679,91 @@ public class AVLTree {
 		return root;
 	}
 
+	/**
+	 * Clears the AVL tree
+	 */
+	public void clear() {
+		root = null;
+	}
+	
+	/**
+	 * Indicates if tree is empty
+	 * An tree is empty when its root node is null
+	 * 
+	 * @return true if root is null, (tree is empty), false otherwise
+	 */
+	public boolean isEmpty() {
+		return root == null;
+	}
+	
+	/**
+	 * Checks if the tree satisfies AVL balance property
+	 * @return true if balanced, false otherwise
+	 */
+	public boolean isAVLBalanced() {
+	    return checkIsBalanced(root);
+	}
+	
+	
+	/**
+	 * Public method to traverse in order
+	 * Since Node class is private this has a parameter for a functional interface to help with an action performed
+	 * at each node visit. Helping with encapsulation and if more can be done to the function.
+	 * Traversal is from left to right
+	 * @param visitor the NodeVisitor that will be called with each node's value
+	 */
+	public void traverseInOrder(SimpleVisitor visitor) {
+		if (root == null) return;
+		
+		inOrder(root, visitor);
+	}
+	
+	/**
+	 * Public method to traverse in reverse order
+	 * Since Node class is private this has a parameter for a functional interface to help with an action performed
+	 * at each node visit. Helping with encapsulation and if more can be done to the function.
+	 * Traversal is from right to left
+	 * @param visitor the NodeVisitor that will be called with each node's value
+	 */
+	public void traverseReverseOrder(SimpleVisitor visitor) {
+		if (root == null) return;
+
+		reverseOrder(root, visitor);
+	}
+
+	/**
+	 * Entry method for traversing the AVL tree in post order
+	 * @param visitor the NodeVisitor that will be called with each node's value
+	 */
+	public void traversePostOrder(SimpleVisitor visitor) {
+		if (root == null) return;
+
+		postOrder(root, visitor);
+	}
+
+	/**
+	 * Entry method for traversing the AVL tree in pre order
+	 * @param visitor the NodeVisitor that will be called with each node's value
+	 */
+	public void traversePreOrder(SimpleVisitor visitor) {
+		if (root == null) return;
+
+		preOrder(root, visitor);
+	}
+	
+	//TODO: [Add documentation]
+	public void traverseAllPreOrder(DetailedVisitor visitor) {
+		if (root == null) return;
+		
+		preOrder(root, 0, getTreeHeight(), visitor);
+	}
+
+
+	/** Method to get the numberOfValues of the tree meaning the number of nodes with values
+	 * @return returns the value of the value in the numberOfValues field, aka the number of nodes.
+	 */
+	public int size() {
+		return numberOfValues;
+	}
 	
 }
