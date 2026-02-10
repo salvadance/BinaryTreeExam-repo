@@ -21,9 +21,9 @@ import java.util.Scanner;
 public class AVLTreeMenu {
 	private AVLTree tree;
 	private TreeDisplayer displayer;
-	private boolean isTreeReversed;
+	private boolean isReversed;
+	private boolean isFlipped;
 	private static final int MAX_NUMBER_OF_VALUES = (1 << 4) - 1;
-	private int numOfValues;
 	
 	/**
 	 * Constructs a AVLTreeMenu with an empty AVL tree and TreeDisplayer.
@@ -32,8 +32,8 @@ public class AVLTreeMenu {
 	public AVLTreeMenu() {
 		tree = new AVLTree();
 		displayer = new TreeDisplayer(tree);
-		isTreeReversed = false;
-		numOfValues = 0;
+		isReversed = false;
+		isFlipped = false;
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public class AVLTreeMenu {
 	 * Automatically inserts values and rebalances the tree
 	 */
 	private void initializeTreeWithRandomNumbers() {
-		Random randG = new Random(500);
+		Random randG = new Random();
 		int numberOfNodes = (1 << 4) - 1;
 		int[] nums = new int[numberOfNodes];
 		//int treeHeight;
@@ -62,11 +62,14 @@ public class AVLTreeMenu {
 		}
 		
 		System.out.println("Is tree balanced: " + tree.isAVLBalanced() + "\n");
+		System.out.println("Balance Factor: " + tree.balanceFactor());
 	}
 	
 	/**
-	 * Toggles the tree displayer orientation between normal and reversed.
-	 * In reversed mode, larger values appear on the left and smaller values on the right.
+	 * Toggles the tree displayer orientation reversed or not. 
+	 * Normal: Left→smaller values and right→larger values
+	 * Reverse: Left→larger values and Right→smaller values
+	 * 
 	 * Displays an error message if the tree is empty
 	 */
 	private void reverseTree() {
@@ -75,9 +78,27 @@ public class AVLTreeMenu {
 			return;
 		}
 
-		isTreeReversed = !isTreeReversed; //Set is tree reversed boolean value
+		isReversed = !isReversed; //Set is tree reversed boolean value
 		
 		System.out.println("\n\nTree is now reversed\n\n");
+	}
+	
+	/**
+	 * Toggles the tree displayer orientation flipped or not. 
+	 * Normal: Root is at top and leaf nodes at the bottom
+	 * Reverse: Root at the very bottom and above it are the internal and leaf nodes
+	 * 
+	 * Displays an error message if the tree is empty
+	 */
+	private void flipTree() {
+		if (tree.isEmpty()) { // Special case the tree is empty
+			System.out.println("\n\n Tree is empty! Cannot flip.\n\n");
+			return;
+		}
+
+		isFlipped = !isFlipped; //Set is tree reversed boolean value
+		
+		System.out.println("\n\nTree is now flipped\n\n");
 	}
 	
 	/**
@@ -100,10 +121,12 @@ public class AVLTreeMenu {
 		int numToAdd;
 		char quitChar;
 		
+		if(tree == null) return;
+		
 		do { //do-while loop
 			
 			//If maximum values reached then display message and break loop
-			if (numOfValues >= MAX_NUMBER_OF_VALUES) {
+			if (tree.size() >= MAX_NUMBER_OF_VALUES) {
 				System.out.println("\nLimit of " + MAX_NUMBER_OF_VALUES + " reached for number of elements in AVL tree\n\n");
 				break;
 			}
@@ -119,9 +142,8 @@ public class AVLTreeMenu {
 				
 				if (numToAdd >= 1 && numToAdd <= 9999) { // Validate if value within range
 					if (tree.insert(numToAdd)) { // Call helper method and get its return boolean value if was insertered or duplicate
-						++numOfValues;
 						System.out.println(numToAdd + " added!");
-						System.out.println(numOfValues + " / " + MAX_NUMBER_OF_VALUES + " of values in AVL tree");
+						System.out.println(tree.size() + " / " + MAX_NUMBER_OF_VALUES + " of values in AVL tree");
 					}
 					else {
 						System.out.println(numToAdd + " already exists in the AVL tree");
@@ -148,7 +170,7 @@ public class AVLTreeMenu {
 	/**
 	 * Prompts the user to remove a node from the tree by key value
 	 * Validates input range (1-9999) and confirms nodes existence before removal.
-	 * Updtaes the node count and displays remaining values.
+	 * Updates the node count and displays remaining values.
 	 * Handles InputMismatchException gracefully and exits if tree becomes empty
 	 * 
 	 * @param scnr the Scanner object for reading user input
@@ -156,6 +178,12 @@ public class AVLTreeMenu {
 	private void removeNumber(Scanner scnr) {
 		int numberToRemove;
 		char quitChar = 'a';
+		
+		if (tree == null || tree.isEmpty()) {
+			System.out.println("Tree is empty: Now exiting");
+			return;
+		}
+		
 		
 		do {
 			
@@ -165,7 +193,7 @@ public class AVLTreeMenu {
 				if (!tree.isEmpty()) {
 					
 					//Prompt user to enter key/node to remove
-					System.out.println(numOfValues + " / " + MAX_NUMBER_OF_VALUES + " of values in AVL tree");
+					System.out.println(tree.size() + " / " + MAX_NUMBER_OF_VALUES + " of values in AVL tree");
 					System.out.println("Enter a key to remove: ");
 					numberToRemove = scnr.nextInt();
 					scnr.nextLine();
@@ -176,8 +204,7 @@ public class AVLTreeMenu {
 						//Check if number exists if so key is removed and displays message, otherwise another message is displayed
 						if (tree.remove(numberToRemove)) {
 							System.out.println("key " + numberToRemove + " successfully removed!");
-							--numOfValues;
-							System.out.println(numOfValues + " / " + MAX_NUMBER_OF_VALUES + " of values in AVL tree\n\n");
+							System.out.println(tree.size() + " / " + MAX_NUMBER_OF_VALUES + " of values in AVL tree\n\n");
 							
 						}
 						else {
@@ -221,7 +248,7 @@ public class AVLTreeMenu {
 		
 		do {
 			
-			handleSelection(userSelection, scnr); // Call helper method that handles user selection
+			
 			
 			//Print menu options after each successful selection
 			if (userSelection == 'a' || userSelection == 'f' || userSelection == 'r' || userSelection == 'i' || userSelection == 'p'
@@ -235,7 +262,7 @@ public class AVLTreeMenu {
 			userSelection = scnr.next().charAt(0);
 			System.out.println();
 			
-			
+			handleSelection(userSelection, scnr); // Call helper method that handles user selection
 			
 		} while(userSelection != 'q');
 	}
@@ -249,6 +276,7 @@ public class AVLTreeMenu {
      * - 'l': Print flipped tree view
      * - 'i': Initialize tree with random values
      * - 'p': Print normal tree view
+     * - 'o': Print tree orders
      * - 's': Print tree statistics (in-order, reversed, original order)
      * - 'd': Delete/remove a node
      * - 'c': Clear entire tree
@@ -256,14 +284,14 @@ public class AVLTreeMenu {
 	 * @param selection the character entered by the user
 	 * @param scnr the Scanner object for reading user input.
 	 */
-	private void handleSelection(char selection, Scanner scnr) {
+	private void handleSelection(char selection, Scanner scnr) { //TODO: [Change logic so 'p' selection does all the printing]
 		switch(selection) {
 			case 'a' -> addNumber(scnr);
 			case 'f' -> displayer.menuGetFamily(scnr);
 			case 'r' -> reverseTree();
-			case 'l' -> displayer.printFlipped(isTreeReversed);
+			case 'l' -> flipTree();
 			case 'i' -> initializeTreeWithRandomNumbers();
-			case 'p' -> displayer.printTreeNormalOrientation(isTreeReversed);
+			case 'p' -> displayer.printTree(isReversed, isFlipped);
 			case 's' -> displayer.printTreeOrders();
 			case 'd' -> removeNumber(scnr);
 			case 'c' -> clearTree();
@@ -286,6 +314,10 @@ public class AVLTreeMenu {
 		System.out.println("'d' -- delete a node/key");
 		System.out.println("'c' -- clear tree");
 		System.out.println("'q' -- quit");
+		
+		if(tree != null && !tree.isEmpty()) {
+			System.out.println("Is tree flipped? " + isFlipped + " || Is tree reversed? " + isReversed);
+		}
 	}
 
 	/**
