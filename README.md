@@ -14,14 +14,14 @@ A Java console application that implements a self-balancing AVL (Adelson-Velsky 
    ```bash
    cd BinaryTreeExam
    ```
-1. **Compile the Java files preferably to a bin directory**:
+1. **Compile the Java files**:
    
    ```bash
-   javac src/binaryTreeExam/*.java
+   javac *.java
    ```
 1. **Run the application**:
    ```bash
-    java -cp src binaryTreeExam.BinaryTreeMenu
+    java binaryTreeExam.BinaryTreeMenu
    ```
 
 ## Usage
@@ -31,7 +31,7 @@ A Java console application that implements a self-balancing AVL (Adelson-Velsky 
 Run the main class to start the interactive menu:
     
 ```bash
-java -cp src ClockProgram.ClockInterface
+java binaryTreeExam.BinaryTreeMenu
 ```
 
 ## Overview
@@ -57,16 +57,18 @@ This project demonstrates a fully functional AVL tree with insertion, deletion, 
 BinaryTreeExam/
 └── src/
    └── binaryTreeExam/
-       ├── BinaryTree.java        # Core AVL tree implementation
+       ├── AVLTree.java           # Core AVL tree implementation
        ├── TreeDisplayer.java     # Visualization and display logic
-       ├── BinaryTreeMenu.java    # User interface and main entry point
+       ├── AVLTreeMenu.java       # User interface and main entry point
+       ├── InfoExtractor.java     # Read only class for node information.
+       ├── DetailedVisitor.java   # A Functional interface for Node visits  
        └── package-info.java      # Package documentation
                                   # Compiled class files
 ```
 
 ## Key Components
 
-### BinaryTree.java
+### AVLTree.java
 Core AVL tree implementation with:
 - **Node class**: Basic tree node structure with key, left/right/parent pointers, and height
 - **Insertion**: Adds nodes and rebalances tree automatically
@@ -91,7 +93,17 @@ Interactive console menu providing:
 - View node family information
 - Clear tree
 
+### DetailedVisitor.java
+Functional interface 
+- Visitor design pattern
+- Visit method that takes in the parameters: value, level, maxLevel.
 
+### InfoExtractor.java
+Read only class for a node's information
+- Fields all final upon initializtion
+- There is a default constructor to account for null nodes
+- This class is used with the search() method
+- Keeps encapsulation by making Node class private in the AVLTree class
 
 ### Menu Options
 
@@ -100,8 +112,8 @@ Interactive console menu providing:
 - **'r'** - Toggle reversed display mode
 - **'l'** - Print tree flipped (root at bottom)
 - **'i'** - Initialize tree with random values
-- **'p'** - Print binary tree (root at top)
-- **'s'** - Print tree statistics (traversal orders)
+- **'p'** - print AVL tree (root at top)
+- **'s'** - Print AVL tree statistics (traversal orders)
 - **'d'** - Delete a node/key
 - **'c'** - Clear tree
 - **'q'** - Quit
@@ -159,7 +171,7 @@ When balance factor becomes ±2, the tree performs rotations:
 
 2. **Recursive Traversal**: Uses recursion for tree operations and visualization building
 
-3. **Level-Order Storage**: TreeDisplayer uses ArrayList of ArrayLists to organize nodes by level for display
+3. **Level-Order Storage**: TreeDisplayer uses ArrayList of ArrayLists<Integer> to organize nodes by level for display
 
 4. **Post-Order Processing**: Display methods process children before parents to build complete tree structure
 
@@ -197,7 +209,6 @@ This project demonstrates:
 
 
 ## Author
-Salvador Lugo
 Salvador Lugo
 Created as part of CS131 coursework demonstrating binary tree and AVL tree concepts.
 
