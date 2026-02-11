@@ -60,7 +60,7 @@ BinaryTreeExam/
        ├── AVLTree.java           # Core AVL tree implementation
        ├── TreeDisplayer.java     # Visualization and display logic
        ├── AVLTreeMenu.java       # User interface and main entry point
-       ├── InfoExtractor.java     # Read only class for node information.
+       ├── InfoNode.java          # Read only class for node information.
        ├── DetailedVisitor.java   # A Functional interface for Node visits  
        └── package-info.java      # Package documentation
                                   # Compiled class files
@@ -98,7 +98,7 @@ Functional interface
 - Visitor design pattern
 - Visit method that takes in the parameters: value, level, maxLevel.
 
-### InfoExtractor.java
+### InfoNode.java
 Read only class for a node's information
 - Fields all final upon initializtion
 - There is a default constructor to account for null nodes

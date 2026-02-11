@@ -536,7 +536,7 @@ public class TreeDisplayer {
 	 */
 	private void printFamily(int key) {
 
-		InfoExtractor info = tree.search(key);
+		InfoNode info = tree.search(key);
 	
 		if (info != null && !info.isEmpty()) {
 			

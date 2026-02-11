@@ -259,11 +259,15 @@ public class AVLTree {
 	 * @param node is the root of the subtree which height will be updated (root of subtree)
 	 */
 	private void treeUpdateHeight(Node node) {
-		int leftHeight, rightHeight;
-		leftHeight = -1;
+		int leftHeight;
+		int rightHeight; 
+		
+		if(node == null) return;
+		
+		leftHeight = rightHeight = -1;
+		
 		if (node.left != null)
 			leftHeight = node.left.height;
-		rightHeight = -1;
 		if (node.right != null)
 			rightHeight = node.right.height;
 		node.height = Math.max(leftHeight, rightHeight) + 1;
@@ -506,26 +510,20 @@ public class AVLTree {
 	 * @param key
 	 * @param extractor
 	 */
-	private InfoExtractor BSTInfoSearch(Node node, int key) {
+	private InfoNode BSTInfoSearch(Node node, int key) {
 		
 		if (node == null) { // Base Case: null reached
-			Integer value = null;
-			Integer parent = null;
-			Integer left = null;
-			Integer right = null;
-			return new InfoExtractor(value, parent, left, right, -1);
+			return new InfoNode();
 		}
 
 		if (node.key == key) { // Base Case: Node found with match key
 			Integer parent = node.parent != null ? node.parent.key : null;
 			Integer left = node.left != null ? node.left.key : null;
 			Integer right = node.right != null ? node.right.key : null;;
-			return new InfoExtractor(node.key, parent, left, right, node.height);
+			return new InfoNode(node.key, parent, left, right, node.height);
 		}
-		else if (key < node.key) BSTSearch(node.left, key); // user's key less than node's key move to left child
-		else BSTSearch(node.right, key); // else move right
-		
-		return new InfoExtractor(null, null, null, null, -1);
+		else if (key < node.key) return BSTInfoSearch(node.left, key); // user's key less than node's key move to left child
+		else return BSTInfoSearch(node.right, key); // else move right
 		
 	}
 	
@@ -713,7 +711,7 @@ public class AVLTree {
 	 * @param extractor extracts the InfoExtractor that will be called when node is found, 
 	 * 		  used to extract node information (key, parent key, left child key, right child key, and height of its subtree)
 	 */
-	public InfoExtractor search(int key) {
+	public InfoNode search(int key) {
 
 		return BSTInfoSearch(root, key);
 

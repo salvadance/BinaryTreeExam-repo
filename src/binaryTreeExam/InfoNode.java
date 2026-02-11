@@ -4,9 +4,10 @@ package binaryTreeExam;
  * Class to get information about a binary tree node and encapsulating the Node class.
  * This was done to not give outside access to the Node class. Because family references can be changed which will break the binary tree
  * Has read only access once constructed. All fields are final once object is constructed with fields.
+ * Mimics a Node but only stores values.
  * 
  */
-public class InfoExtractor {
+public class InfoNode {
 	final private Integer VALUE;
 	final private Integer PARENT_VALUE;
 	final private Integer LEFT_VALUE;
@@ -21,7 +22,7 @@ public class InfoExtractor {
 	 * @param right
 	 * @param height
 	 */
-	public InfoExtractor(Integer value, Integer parent, Integer left, Integer right, int height) {
+	public InfoNode(Integer value, Integer parent, Integer left, Integer right, int height) {
 		VALUE = value;
 		PARENT_VALUE = parent;
 		LEFT_VALUE = left;
@@ -33,7 +34,7 @@ public class InfoExtractor {
 	/**
 	 * Default construct for InfoExtractor will have in a binary tree
 	*/
-	public InfoExtractor() {
+	public InfoNode() {
 		VALUE = null;
 		PARENT_VALUE = null;
 		LEFT_VALUE = null;
